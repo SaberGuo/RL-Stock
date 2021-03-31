@@ -15,7 +15,7 @@ font = fm.FontProperties(fname='font/wqy-microhei.ttc')
 plt.rcParams['axes.unicode_minus'] = False
 
 
-def stock_trade(stock_file):
+def stock_trade(stock_file, stock_code, isSave=False):
     day_profits = []
     df = pd.read_csv(stock_file)
     df = df.sort_values('date')
@@ -27,6 +27,12 @@ def stock_trade(stock_file):
     model = PPO2(MlpLnLstmPolicy, env, nminibatches=1, verbose=0, tensorboard_log='./log')
     # model = PPO2(MlpPolicy, env, verbose=0, tensorboard_log='./log')
     model.learn(total_timesteps=int(1e4))
+
+    if not os.path.exists('./models'):
+        os.mkdir('./models')
+    if isSave:
+        save_path = "./models/" + stock_code
+        model.save(save_path)
 
     df_test = pd.read_csv(stock_file.replace('train', 'test'))
 
@@ -50,10 +56,10 @@ def find_file(path, name):
                 return os.path.join(root, fname)
 
 
-def test_a_stock_trade(stock_code):
+def test_a_stock_trade(stock_code, isSave=False):
     stock_file = find_file('./stockdata/train', str(stock_code))
 
-    daily_profits = stock_trade(stock_file)
+    daily_profits = stock_trade(stock_file, stock_code, isSave)
     fig, ax = plt.subplots()
     ax.plot(daily_profits, '-o', label=stock_code, marker='o', ms=10, alpha=0.7, mfc='orange')
     ax.grid()
@@ -66,7 +72,7 @@ def test_a_stock_trade(stock_code):
 
 def multi_stock_trade():
     start_code = 600000
-    max_num = 3000
+    max_num = 300
 
     group_result = []
 
@@ -74,18 +80,19 @@ def multi_stock_trade():
         stock_file = find_file('./stockdata/train', str(code))
         if stock_file:
             try:
-                profits = stock_trade(stock_file)
+                profits = stock_trade(stock_file, str(code), isSave=True)
                 group_result.append(profits)
             except Exception as err:
                 print(err)
 
-    with open(f'code-{start_code}-{start_code + max_num}.pkl', 'wb') as f:
-        pickle.dump(group_result, f)
+    # with open(f'code-{start_code}-{start_code + max_num}.pkl', 'wb') as f:
+    #     pickle.dump(group_result, f)
 
 
 if __name__ == '__main__':
     multi_stock_trade()
-    # test_a_stock_trade('sh.600051')
+
+    # test_a_stock_trade('sh.600051', isSave=True)
     # ret = find_file('./stockdata/train', '600036')
     # print(ret)
 

@@ -53,7 +53,7 @@ if __name__ == '__main__':
     downloader = Downloader('./stockdata/train', date_start='1990-01-01', date_end='2021-02-01')
     downloader.run()
 
-    # mkdir('./stockdata/test')
-    # downloader = Downloader('./stockdata/test', date_start='2021-02-01', date_end='2021-3-29')
-    # downloader.run()
+    mkdir('./stockdata/test')
+    downloader = Downloader('./stockdata/test', date_start='2021-02-01', date_end='2021-3-29')
+    downloader.run()
 
