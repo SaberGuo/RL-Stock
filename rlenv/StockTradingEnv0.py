@@ -139,6 +139,14 @@ class StockTradingEnv(gym.Env):
         self.current_step = 0
 
         return self._next_observation()
+    def set_status(self, status):
+        self.balance = status["balance"]
+        self.net_worth = status["worth"]
+        self.max_net_worth = status["max_net_worth"]
+        self.shares_held = status["shares_held"]
+        self.cost_basis = status["cost_basis"]
+        self.total_shares_sold = status["total_shares_sold"]
+        self.total_sales_value = status["total_sales_value"]
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen
