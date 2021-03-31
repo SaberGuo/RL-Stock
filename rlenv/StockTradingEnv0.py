@@ -147,6 +147,16 @@ class StockTradingEnv(gym.Env):
         self.cost_basis = status["cost_basis"]
         self.total_shares_sold = status["total_shares_sold"]
         self.total_sales_value = status["total_sales_value"]
+    
+    def get_status(self):
+        res = {"balance": self.balance,
+                    "net_worth":self.net_worth,
+                    "max_net_worth":self.max_net_worth,
+                    "shares_held":self.shares_held,
+                    "cost_basis":self.cost_basis,
+                    "total_shares_sold":self.total_shares_sold,
+                    "total_sales_value":self.total_sales_value}
+        return res
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen

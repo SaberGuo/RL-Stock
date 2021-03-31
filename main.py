@@ -84,13 +84,8 @@ def multi_stock_trade():
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-    # multi_stock_trade()
-    test_a_stock_trade('sh.000001')
-=======
     multi_stock_trade()
     # test_a_stock_trade('sh.600051')
->>>>>>> b3f94e9c0763186b59d84a6922b7f62c4678db13
     # ret = find_file('./stockdata/train', '600036')
     # print(ret)
 
