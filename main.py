@@ -25,7 +25,7 @@ def stock_trade(stock_file):
 
     model = PPO2(MlpPolicy, env, verbose=0, tensorboard_log='./log')
     model.learn(total_timesteps=int(1e4))
-
+    print("learned OK")
     df_test = pd.read_csv(stock_file.replace('train', 'test'))
 
     env = DummyVecEnv([lambda: StockTradingEnv(df_test)])
@@ -83,7 +83,7 @@ def multi_stock_trade():
 
 if __name__ == '__main__':
     # multi_stock_trade()
-    test_a_stock_trade('sh.600036')
+    test_a_stock_trade('sh.000001')
     # ret = find_file('./stockdata/train', '600036')
     # print(ret)
 

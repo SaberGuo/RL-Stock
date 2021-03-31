@@ -151,3 +151,7 @@ pip install -r requirements.txt
 - [Create custom gym environments from scratch — A stock market example](https://towardsdatascience.com/creating-a-custom-openai-gym-environment-for-stock-trading-be532be3910e)
 - [notadamking/Stock-Trading-Environment](https://github.com/notadamking/Stock-Trading-Environment)
 - [Welcome to Stable Baselines docs! - RL Baselines Made Easy](https://stable-baselines.readthedocs.io/en/master)
+
+## to do
+1. 加LSTM进取
+2. action改为买多少，卖多少
