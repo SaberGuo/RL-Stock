@@ -69,14 +69,22 @@ def test_a_stock_trade(stock_code, isSave=False):
     # plt.show()
     plt.savefig(f'./img/{stock_code}.png')
 
+def get_code_list():
+    code_list_file = "./config/code_test.txt"
+    with open(code_list_file, 'r') as f:
+        lines = f.readlines()
+        code_list = []
+        for l in lines:
+            code_list.append(l.strip())
+        return code_list
+    return []
 
 def multi_stock_trade():
-    start_code = 600000
-    max_num = 300
+    code_list = get_code_list()
 
     group_result = []
 
-    for code in range(start_code, start_code + max_num):
+    for code in code_list:
         stock_file = find_file('./stockdata/train', str(code))
         if stock_file:
             try:

@@ -29,7 +29,7 @@ class StockTradingEnv(gym.Env):
 
         # Actions of the format Buy x%, Sell x%, Hold, etc.
         self.action_space = spaces.Box(
-            low=np.array([0, 0]), high=np.array([3, 1]), dtype=np.float16)
+            low=np.array([0, 0, 0]), high=np.array([3, 1, 1]), dtype=np.float16)
 
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
@@ -37,19 +37,19 @@ class StockTradingEnv(gym.Env):
 
     def _next_observation(self):
         obs = np.array([
-            self.df.loc[self.current_step, 'open'] / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step, 'high'] / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step, 'low'] / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step, 'close'] / MAX_SHARE_PRICE,
-            self.df.loc[self.current_step, 'volume'] / MAX_VOLUME,
-            self.df.loc[self.current_step, 'amount'] / MAX_AMOUNT,
-            self.df.loc[self.current_step, 'adjustflag'] / 10,
-            self.df.loc[self.current_step, 'tradestatus'] / 1,
-            self.df.loc[self.current_step, 'pctChg'] / 100,
-            self.df.loc[self.current_step, 'peTTM'] / 1e4,
-            self.df.loc[self.current_step, 'pbMRQ'] / 100,
-            self.df.loc[self.current_step, 'psTTM'] / 100,
-            self.df.loc[self.current_step, 'pctChg'] / 1e3,
+            float(self.df.loc[self.current_step, 'open']) / MAX_SHARE_PRICE,
+            float(self.df.loc[self.current_step, 'high']) / MAX_SHARE_PRICE,
+            float(self.df.loc[self.current_step, 'low']) / MAX_SHARE_PRICE,
+            float(self.df.loc[self.current_step, 'close']) / MAX_SHARE_PRICE,
+            float(self.df.loc[self.current_step, 'volume']) / MAX_VOLUME,
+            float(self.df.loc[self.current_step, 'amount']) / MAX_AMOUNT,
+            float(self.df.loc[self.current_step, 'adjustflag']) / 10,
+            float(self.df.loc[self.current_step, 'tradestatus']) / 1,
+            float(self.df.loc[self.current_step, 'pctChg']) / 100,
+            float(self.df.loc[self.current_step, 'peTTM']) / 1e4,
+            float(self.df.loc[self.current_step, 'pbMRQ']) / 100,
+            float(self.df.loc[self.current_step, 'psTTM']) / 100,
+            float(self.df.loc[self.current_step, 'pctChg']) / 1e3,
             self.balance / MAX_ACCOUNT_BALANCE,
             self.max_net_worth / MAX_ACCOUNT_BALANCE,
             self.shares_held / MAX_NUM_SHARES,
@@ -61,11 +61,13 @@ class StockTradingEnv(gym.Env):
 
     def _take_action(self, action):
         # Set the current price to a random price within the time step
-        current_price = random.uniform(
-            self.df.loc[self.current_step, "open"], self.df.loc[self.current_step, "close"])
+        # current_price = random.uniform(
+        #     self.df.loc[self.current_step, "open"], self.df.loc[self.current_step, "close"])
 
         action_type = action[0]
         amount = action[1]
+        price = action[2]
+        current_price = (self.df.loc[self.current_step,"high"]-self.df.loc[self.current_step, 'low'])*price+self.df.loc[self.current_step, 'low']
 
         if action_type < 1:
             # Buy amount % of balance in shares
@@ -139,24 +141,24 @@ class StockTradingEnv(gym.Env):
         self.current_step = 0
 
         return self._next_observation()
-    def set_status(self, status):
-        self.balance = status["balance"]
-        self.net_worth = status["worth"]
-        self.max_net_worth = status["max_net_worth"]
-        self.shares_held = status["shares_held"]
-        self.cost_basis = status["cost_basis"]
-        self.total_shares_sold = status["total_shares_sold"]
-        self.total_sales_value = status["total_sales_value"]
+    # def set_status(self, status):
+    #     self.balance = status["balance"]
+    #     self.net_worth = status["worth"]
+    #     self.max_net_worth = status["max_net_worth"]
+    #     self.shares_held = status["shares_held"]
+    #     self.cost_basis = status["cost_basis"]
+    #     self.total_shares_sold = status["total_shares_sold"]
+    #     self.total_sales_value = status["total_sales_value"]
     
-    def get_status(self):
-        res = {"balance": self.balance,
-                    "net_worth":self.net_worth,
-                    "max_net_worth":self.max_net_worth,
-                    "shares_held":self.shares_held,
-                    "cost_basis":self.cost_basis,
-                    "total_shares_sold":self.total_shares_sold,
-                    "total_sales_value":self.total_sales_value}
-        return res
+    # def get_status(self):
+    #     res = {"balance": self.balance,
+    #                 "net_worth":self.net_worth,
+    #                 "max_net_worth":self.max_net_worth,
+    #                 "shares_held":self.shares_held,
+    #                 "cost_basis":self.cost_basis,
+    #                 "total_shares_sold":self.total_shares_sold,
+    #                 "total_sales_value":self.total_sales_value}
+    #     return res
 
     def render(self, mode='human', close=False):
         # Render the environment to the screen

@@ -15,7 +15,7 @@ font = fm.FontProperties(fname='font/wqy-microhei.ttc')
 plt.rcParams['axes.unicode_minus'] = False
 
 
-def stock_trade(stock_file):
+def stock_trade(stock_file, stock_code):
     day_profits = []
     df = pd.read_csv(stock_file)
     df = df.sort_values('date')
@@ -26,7 +26,9 @@ def stock_trade(stock_file):
 
     model = PPO2(MlpLnLstmPolicy, env, nminibatches=1, verbose=0, tensorboard_log='./log')
     # model = PPO2(MlpPolicy, env, verbose=0, tensorboard_log='./log')
-    model.learn(total_timesteps=int(1e4))
+    model.learn(total_timesteps=int(1e5))
+    save_path = "./models/" + stock_code
+    model.save(save_path)
     print("learned OK")
     df_test = pd.read_csv(stock_file.replace('train', 'test'))
 
@@ -53,7 +55,7 @@ def find_file(path, name):
 def test_a_stock_trade(stock_code):
     stock_file = find_file('./stockdata/train', str(stock_code))
 
-    daily_profits = stock_trade(stock_file)
+    daily_profits = stock_trade(stock_file, stock_code)
     fig, ax = plt.subplots()
     ax.plot(daily_profits, '-o', label=stock_code, marker='o', ms=10, alpha=0.7, mfc='orange')
     ax.grid()
@@ -84,8 +86,8 @@ def multi_stock_trade():
 
 
 if __name__ == '__main__':
-    multi_stock_trade()
-    # test_a_stock_trade('sh.600051')
+    # multi_stock_trade()
+    test_a_stock_trade('sh.600036')
     # ret = find_file('./stockdata/train', '600036')
     # print(ret)
 
